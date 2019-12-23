@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 public class TransactionRequestDto {
 	private Long userId;
-	private Integer month;
+	private String month;
 	private Integer year;
 }

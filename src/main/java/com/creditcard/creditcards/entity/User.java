@@ -30,6 +30,7 @@ public class User {
 	private Long mobileNumber;
 	private LocalDate dateOfBirth;
 	private String address;
+	
 	@OneToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "card_id")
 	private CreditCard creditCard;

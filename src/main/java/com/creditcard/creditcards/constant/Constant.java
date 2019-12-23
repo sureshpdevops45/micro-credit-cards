@@ -10,7 +10,7 @@ public class Constant {
 	public static final String INVALID_CARD_NUMBER = "Invalid card number";
 	public static final String SUCCESS = "success";
 	public static final Integer ACCEPTED=200;
-
+	public static final String TRANSACTION_NOT_FOUND="Transaction not found";
 
 
 

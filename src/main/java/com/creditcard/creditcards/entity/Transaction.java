@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,8 +25,9 @@ public class Transaction {
 	private LocalDate date;
 	private String status;
 	private String description;
-	@ManyToOne(cascade = CascadeType.ALL)
+	
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "card_id")
-	private CreditCard creditcard;
+	private CreditCard creditCard;
 
 }

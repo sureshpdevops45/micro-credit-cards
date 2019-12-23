@@ -7,6 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import com.creditcard.creditcards.entity.User;
 
+/**
+ * This repository is used to get userDetails using the userName and password
+ * 
+ * @author Nivetha
+ *
+ */
 @Repository
 public interface LoginRepository extends JpaRepository<User,Long> {
 
