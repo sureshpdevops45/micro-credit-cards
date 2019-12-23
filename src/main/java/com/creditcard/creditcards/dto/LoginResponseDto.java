@@ -2,15 +2,15 @@ package com.creditcard.creditcards.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import lombok.ToString;
 
-@Setter
-@Getter
-@ToString
-public class LoginResponseDto {
+import java.time.LocalDate;
 
-    private Long userId;
-    private String name;
-    private String message;
-    private Integer statusCode;
+@Setter
+public class LoginResponseDto {
+	private Long userId;
+	private String name;
+	private Integer statusCode;
+	private String message;
 }

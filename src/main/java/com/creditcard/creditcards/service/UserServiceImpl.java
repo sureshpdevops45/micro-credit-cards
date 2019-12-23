@@ -1,5 +1,8 @@
 package com.creditcard.creditcards.service;
 
+
+import java.time.LocalDate;
+import java.util.Random;
 import com.creditcard.creditcards.controller.UserController;
 import com.creditcard.creditcards.dto.UserDto;
 import com.creditcard.creditcards.dto.UserResponseDto;
@@ -10,6 +13,7 @@ import com.creditcard.creditcards.repository.CreditCardRepository;
 import com.creditcard.creditcards.repository.OTPRepository;
 import com.creditcard.creditcards.repository.UserRepository;
 import com.creditcard.creditcards.util.Constants;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.Random;
 
 @Service
 public class UserServiceImpl implements UserService {

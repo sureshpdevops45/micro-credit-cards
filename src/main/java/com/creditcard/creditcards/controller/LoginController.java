@@ -1,6 +1,5 @@
 package com.creditcard.creditcards.controller;
 
-import com.creditcard.creditcards.dto.LoginResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.creditcard.creditcards.constant.Constant;
+import com.creditcard.creditcards.dto.LoginResponseDto;
 import com.creditcard.creditcards.dto.UserLogin;
-import com.creditcard.creditcards.dto.UserResponseDto;
+import com.creditcard.creditcards.exception.UserNotFoundException;
 import com.creditcard.creditcards.service.LoginService;
+/**
+ * This API is used to login the user using the userName and password
+ * to get the userDetails
+ * 
+ * @author Nivetha
+ *
+ */
 
 @RestController
 @RequestMapping("/login")
@@ -23,14 +30,29 @@ import com.creditcard.creditcards.service.LoginService;
 public class LoginController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+	/**
+	 * This will inject all the implementations in the loginService
+	 */
 
 	@Autowired
-	LoginService userService;
+	LoginService loginService;
+	
+	/**
+	 * This API is used to login the user using the userName and password 
+	 * to get the name and userId
+	 * 
+	 * @param userLogin This dto contains the userName and password to check the credentials
+	 * 
+	 * @return This returns the LoginResponseDto which includes name,userId 
+	 * along with the statuscode and message
+	 * 
+	 * @throws UserNotFoundException occurs when user not found
+	 */
 
 	@PostMapping
-	public ResponseEntity<LoginResponseDto> loginUser(@RequestBody UserLogin userLogin) {
+	public ResponseEntity<LoginResponseDto> loginUser(@RequestBody UserLogin userLogin) throws UserNotFoundException {
 		logger.info("Inside validating user method");
-		LoginResponseDto loginResponseDto = userService.loginUser(userLogin.getUserName(), userLogin.getPassword());
+		LoginResponseDto loginResponseDto = loginService.loginUser(userLogin.getUserName(), userLogin.getPassword());
 		if (loginResponseDto != null) {
 			loginResponseDto.setStatusCode(Constant.VALID_CREDENTIALS);
 			loginResponseDto.setMessage(Constant.USER_FOUND);
