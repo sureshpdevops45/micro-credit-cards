@@ -2,10 +2,7 @@ package com.creditcard.creditcards.entity;
 
 import java.time.LocalDate;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Data;
 
@@ -13,7 +10,9 @@ import lombok.Data;
 @Table(name="user")
 @Data
 public class User {
-	
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long userId;
 	private String name;
 	private String userName;
@@ -22,8 +21,8 @@ public class User {
 	private Long mobileNumber;
 	private LocalDate dateOfBirth;
 	private String address;
-	
-	@OneToOne
-	@JoinColumn(name = "cardId")
+
+	@OneToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "card_id")
 	private CreditCard creditCard;
 }
