@@ -23,6 +23,7 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long userId;
 	private String name;
+	@Column(unique = true)
 	private String userName;
 	private String password;
 	private Double salary;

@@ -1,5 +1,6 @@
 package com.creditcard.creditcards.service;
 
+import com.creditcard.creditcards.constant.Constant;
 import com.creditcard.creditcards.controller.UserController;
 import com.creditcard.creditcards.dto.UserDto;
 import com.creditcard.creditcards.dto.UserResponseDto;
@@ -7,6 +8,7 @@ import com.creditcard.creditcards.entity.CreditCard;
 import com.creditcard.creditcards.entity.User;
 import com.creditcard.creditcards.repository.CreditCardRepository;
 import com.creditcard.creditcards.repository.UserRepository;
+import com.creditcard.creditcards.util.Constants;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,13 +34,14 @@ public class UserServiceImpl implements UserService {
     private CreditCardRepository creditCardRepository;
 
     @Transactional
-    public UserResponseDto addUser(UserDto userDto) {
+    @Override
+    public UserResponseDto addUser(UserDto userDto) throws Exception {
         logger.info("adding User service ");
         User user = new User();
         CreditCard creditCard = new CreditCard();
 
-        Long creditCardNumber = Long.parseLong(generateRandomNumbers("1001", 16));
-        Integer ccvNumber = Integer.parseInt(generateRandomNumbers(StringUtils.EMPTY, 3));
+        Long creditCardNumber = Long.parseLong(generateRandomNumbers(Constants.CREDIT_CARD_STARTING_NUMBER, 17));
+        Integer ccvNumber = Integer.parseInt(generateRandomNumbers(StringUtils.EMPTY, 4));
         Double limit = userDto.getSalary() + (userDto.getSalary() * 20 / 100);
         Double balance = new Double(limit);
         LocalDate expireDate = LocalDate.now().plusYears(5);
@@ -52,9 +55,14 @@ public class UserServiceImpl implements UserService {
         logger.info("adding User service " + creditCard);
 
         BeanUtils.copyProperties(userDto, user);
-        creditCard = creditCardRepository.save(creditCard);
-        user.setCreditCard(creditCard);
-        user = userRepository.save(user);
+        try {
+            creditCard = creditCardRepository.save(creditCard);
+            user.setCreditCard(creditCard);
+            user = userRepository.save(user);
+        } catch ( Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new Exception("User Name already exists");
+        }
         UserResponseDto userResponseDto = new UserResponseDto();
         BeanUtils.copyProperties(user, userResponseDto);
         return userResponseDto;

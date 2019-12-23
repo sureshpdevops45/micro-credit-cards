@@ -1,5 +1,6 @@
 package com.creditcard.creditcards.controller;
 
+import com.creditcard.creditcards.dto.LoginResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,18 +28,18 @@ public class LoginController {
 	LoginService userService;
 
 	@PostMapping
-	public ResponseEntity<UserResponseDto> loginUser(@RequestBody UserLogin userLogin) {
+	public ResponseEntity<LoginResponseDto> loginUser(@RequestBody UserLogin userLogin) {
 		logger.info("Inside validating user method");
-		UserResponseDto	userResponseDto = userService.loginUser(userLogin.getUserName(), userLogin.getPassword());
-		if (userResponseDto != null) {
-			userResponseDto.setStatusCode(Constant.VALID_CREDENTIALS);
-			userResponseDto.setMessage(Constant.USER_FOUND);
-			return new ResponseEntity<>(userResponseDto, HttpStatus.OK);
+		LoginResponseDto loginResponseDto = userService.loginUser(userLogin.getUserName(), userLogin.getPassword());
+		if (loginResponseDto != null) {
+			loginResponseDto.setStatusCode(Constant.VALID_CREDENTIALS);
+			loginResponseDto.setMessage(Constant.USER_FOUND);
+			return new ResponseEntity<>(loginResponseDto, HttpStatus.OK);
 		} else {
-			userResponseDto = new UserResponseDto();
-			userResponseDto.setStatusCode(Constant.INVALID_CREDENTIALS);
-			userResponseDto.setMessage(Constant.USER_NOT_FOUND);
-			return new ResponseEntity<>(userResponseDto, HttpStatus.NOT_FOUND);
+			loginResponseDto = new LoginResponseDto();
+			loginResponseDto.setStatusCode(Constant.INVALID_CREDENTIALS);
+			loginResponseDto.setMessage(Constant.USER_NOT_FOUND);
+			return new ResponseEntity<>(loginResponseDto, HttpStatus.NOT_FOUND);
 		}
 
 	}

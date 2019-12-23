@@ -25,7 +25,7 @@ public class UserController {
     private UserServiceImpl userService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse> addUser(@RequestBody @Valid UserDto userDto) {
+    public ResponseEntity<ApiResponse> addUser(@RequestBody @Valid UserDto userDto) throws Exception {
         logger.info("Entering into addUser controller");
         ApiResponse response = new ApiResponse();
         UserResponseDto userResponseDto = userService.addUser(userDto);
