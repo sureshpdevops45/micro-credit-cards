@@ -17,11 +17,10 @@ public class UserDto {
     private String name;
     @NotBlank(message = "User name should not be a blank")
     private String userName;
-    @NotBlank(message = "Password should not be a blank")
     private String password;
     private Double salary;
     private Long mobileNumber;
-    private LocalDate dateOfBirth;
+    private LocalDate dob;
     private String address;
     private Long creditCardId;
 }

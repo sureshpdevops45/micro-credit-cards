@@ -1,34 +1,42 @@
 package com.creditcard.creditcards.service;
 
+
 import java.time.LocalDate;
 import java.util.Random;
+import com.creditcard.creditcards.controller.UserController;
+import com.creditcard.creditcards.dto.UserDto;
+import com.creditcard.creditcards.dto.UserResponseDto;
+import com.creditcard.creditcards.entity.CreditCard;
+import com.creditcard.creditcards.entity.User;
+import com.creditcard.creditcards.exception.CustomException;
+import com.creditcard.creditcards.repository.CreditCardRepository;
+import com.creditcard.creditcards.repository.OTPRepository;
+import com.creditcard.creditcards.repository.UserRepository;
+import com.creditcard.creditcards.util.Constants;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.creditcard.creditcards.controller.UserController;
-import com.creditcard.creditcards.dto.UserDto;
-import com.creditcard.creditcards.dto.UserResponseDto;
-import com.creditcard.creditcards.entity.CreditCard;
-import com.creditcard.creditcards.entity.User;
-import com.creditcard.creditcards.repository.CreditCardRepository;
-import com.creditcard.creditcards.repository.UserRepository;
-import com.creditcard.creditcards.util.Constants;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private Logger logger = LoggerFactory.getLogger(UserController.class);
 
+    @Value("${creditcard.limit.increase}")
+    Integer creditCardLimit;
+
+    @Value("${registration.age.limit}")
+    Integer ageLimit;
+
+
     @Autowired
     private UserRepository userRepository;
-
-    private Random random = new Random(System.currentTimeMillis());
 
     @Autowired
     private CreditCardRepository creditCardRepository;
@@ -37,58 +45,46 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto addUser(UserDto userDto) throws Exception {
         logger.info("adding User service ");
-        User user = new User();
-        CreditCard creditCard = new CreditCard();
+        UserResponseDto userResponseDto = new UserResponseDto();
+        int years = Period.between(userDto.getDob(), LocalDate.now()).getYears();
+        if (years >= ageLimit) {
+            User user = new User();
+            CreditCard creditCard = new CreditCard();
+            userDto.setPassword(Constants.generateRandomNumbers(StringUtils.EMPTY, 11));
+            Long creditCardNumber = Long.parseLong(Constants.generateRandomNumbers(Constants.CREDIT_CARD_STARTING_NUMBER, 17));
+            Integer ccvNumber = Integer.parseInt(Constants.generateRandomNumbers(StringUtils.EMPTY, 4));
+            Double limit = userDto.getSalary() + (userDto.getSalary() * creditCardLimit / 100);
+            Double balance = new Double(limit);
+            LocalDate expireDate = LocalDate.now().plusYears(5);
 
-        Long creditCardNumber = Long.parseLong(generateRandomNumbers(Constants.CREDIT_CARD_STARTING_NUMBER, 17));
-        Integer ccvNumber = Integer.parseInt(generateRandomNumbers(StringUtils.EMPTY, 4));
-        Double limit = userDto.getSalary() + (userDto.getSalary() * 20 / 100);
-        Double balance = new Double(limit);
-        LocalDate expireDate = LocalDate.now().plusYears(5);
+            setCreditCardValues(creditCard, creditCardNumber, ccvNumber, limit, balance, expireDate);
 
+            logger.info("adding User service " + creditCard);
+
+            BeanUtils.copyProperties(userDto, user);
+            try {
+                creditCard = creditCardRepository.save(creditCard);
+                user.setCreditCard(creditCard);
+                user = userRepository.save(user);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                throw new Exception("User Name already exists");
+            }
+
+            BeanUtils.copyProperties(user, userResponseDto);
+        } else {
+            throw new CustomException("You should have completed 18 years for do registration");
+        }
+        return userResponseDto;
+    }
+
+    private void setCreditCardValues(CreditCard creditCard, Long creditCardNumber, Integer ccvNumber, Double limit, Double balance, LocalDate expireDate) {
         creditCard.setBalance(balance);
         creditCard.setCardlimit(limit);
         creditCard.setCardNumber(creditCardNumber);
         creditCard.setCvv(ccvNumber);
         creditCard.setExpiryDate(expireDate);
-
-        logger.info("adding User service " + creditCard);
-
-        BeanUtils.copyProperties(userDto, user);
-        try {
-            creditCard = creditCardRepository.save(creditCard);
-            user.setCreditCard(creditCard);
-            user = userRepository.save(user);
-        } catch ( Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new Exception("User Name already exists");
-        }
-        UserResponseDto userResponseDto = new UserResponseDto();
-        BeanUtils.copyProperties(user, userResponseDto);
-        return userResponseDto;
     }
 
-    private String generateRandomNumbers(String startingDigit, int length) {
-        StringBuilder builder = new StringBuilder(startingDigit);
-        int randomNumberLength = length - (startingDigit.length() + 1);
-        for (int i = 0; i < randomNumberLength; i++) {
-            int digit = this.random.nextInt(10);
-            builder.append(digit);
-        }
-        return builder.toString();
-    }
-
-//    public void generateOtp(Long userId, Long mobileNumber) {
-//        /*
-//        id
-//otp_value
-//date
-//status
-//mobile_number
-//         */
-//
-//        int otpNumber = Integer.parseInt(generateRandomNumbers(StringUtils.EMPTY, 4));
-//
-//    }
 
 }
