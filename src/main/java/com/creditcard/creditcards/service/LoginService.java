@@ -4,6 +4,6 @@ import com.creditcard.creditcards.dto.LoginResponseDto;
 
 public interface LoginService {
 
-	LoginResponseDto loginUser(String userName, String userPassword);
+	public LoginResponseDto loginUser(String userName, String password);
 
 }

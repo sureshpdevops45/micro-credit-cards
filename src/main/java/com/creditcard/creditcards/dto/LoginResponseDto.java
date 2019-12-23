@@ -3,7 +3,10 @@ package com.creditcard.creditcards.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
+import lombok.ToString;
+
+import java.time.LocalDate;
+
 @Setter
 public class LoginResponseDto {
 	private Long userId;
