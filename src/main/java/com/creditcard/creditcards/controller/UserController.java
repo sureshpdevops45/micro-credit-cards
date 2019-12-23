@@ -1,9 +1,9 @@
 package com.creditcard.creditcards.controller;
 
-import com.creditcard.creditcards.dto.ApiResponse;
-import com.creditcard.creditcards.dto.UserDto;
-import com.creditcard.creditcards.dto.UserResponseDto;
+import com.creditcard.creditcards.dto.*;
 import com.creditcard.creditcards.exception.CustomException;
+import com.creditcard.creditcards.service.CreditCardServiceImpl;
+import com.creditcard.creditcards.service.OTPServiceImpl;
 import com.creditcard.creditcards.service.UserServiceImpl;
 import com.creditcard.creditcards.util.Constants;
 import org.slf4j.Logger;
@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -23,6 +24,10 @@ public class UserController {
 
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private OTPServiceImpl otpService;
+    @Autowired
+    private CreditCardServiceImpl creditCardService;
 
     @PostMapping
     public ResponseEntity<ApiResponse> addUser(@RequestBody @Valid UserDto userDto) throws Exception {
@@ -40,24 +45,42 @@ public class UserController {
         logger.info("existing add user " + userResponseDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-/*
-    @PostMapping("/{userId}/otp/{mobileNumber}")
-    public ResponseEntity<ApiResponse> generateOTP(@PathVariable("userId") Long userId,
-                                                   @PathVariable("mobileNumber") Long mobileNumber) {
+
+    @PostMapping("/{userId}/otp")
+    public ResponseEntity<ApiResponse> generateOTP(@PathVariable("userId") Long userId) {
         logger.info("Entering into Generate Mobile Number controller");
-        ApiResponse response = new ApiResponse();
-        UserResponseDto userResponseDto = userService.generteOtp(userId, mobileNumber);
-        if (userResponseDto != null) {
-            response.setUserResponseDto(userResponseDto);
+        ApiResponse response = otpService.generateOtp(userId);
+        if (response != null) {
             response.setStatusCode(Constants.SUCCESS_CODE);
             response.setMessage(Constants.USER_SUCCESS_MSG);
         } else {
             logger.error(Constants.FAILED_REGISTRATION);
             throw new CustomException(Constants.FAILED_REGISTRATION);
         }
-        logger.info("existing add user " + userResponseDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-*/
 
+    @GetMapping("/{userId}/otp")
+    public ResponseEntity<OTPResponseDto> getOTP(@PathVariable("userId") Long userId) {
+        logger.info("Entering into Generate Mobile Number controller");
+        OTPResponseDto response = otpService.getOtp(userId);
+        if (response == null) {
+            logger.error(Constants.FAILED_REGISTRATION);
+            throw new CustomException(Constants.FAILED_REGISTRATION);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}/creditcard")
+    public ResponseEntity<CreditCardResponseDto> getCreditCards(@PathVariable("userId") Long userId) throws Exception {
+        logger.info("Entering into getCreditCards controller");
+        CreditCardResponseDto creditCardResponseDto = new CreditCardResponseDto();
+        Optional<CreditCardResponseDto> creditCardResponseDtoOptional = creditCardService.getCreditCard(userId);
+        if (creditCardResponseDtoOptional.isPresent()) {
+            creditCardResponseDto =  creditCardResponseDtoOptional.get();
+        } else {
+            throw new Exception("No more credit card is linked");
+        }
+        return new ResponseEntity<>(creditCardResponseDto, HttpStatus.OK);
+    }
 }
