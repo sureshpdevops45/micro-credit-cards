@@ -23,52 +23,55 @@ import com.creditcard.creditcards.repository.TransactionRepository;
 import com.creditcard.creditcards.repository.UserRepository;
 
 /**
- * This API is used to get the monthly transactions of the user by
- * giving the userId
+ * This API is used to get the monthly transactions of the user by giving the
+ * userId
+ * 
  * @author Nivetha
  *
  */
 @Service
 public class TransactionServiceImpl implements TransactionService {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
 
-	
 	/**
 	 * This will inject all the implementations in the transactionRepository
 	 */
-	
 
 	@Autowired
 	TransactionRepository transactionRepository;
-	
+
 	/**
 	 * This will inject all the implementations in the userRepository
 	 */
-	
+
 	@Autowired
 	UserRepository userRepository;
-	
+
 	/**
 	 * This will inject all the implementations in the creditCardRepository
 	 */
-	
+
 	@Autowired
 	CreditCardRepository creditCardRepository;
-	
+
 	/**
-	 * This API is used to get the monthly transactions for the user by giving the userId
+	 * This API is used to get the monthly transactions for the user by giving the
+	 * userId
 	 * 
 	 * @param transactionRequestDto This dto contains the userId,month and the year
 	 * 
-	 * @return This returns the transactionResponseDto which includes the transactionId,
-	 * amount,status,description along with the statusCode and message
+	 * @return This returns the transactionResponseDto which includes the
+	 *         transactionId, amount,status,description along with the statusCode
+	 *         and message
 	 * 
-	 * @throws TransactionNotFoundException occurs when transactions not found for the user
+	 * @throws TransactionNotFoundException occurs when transactions not found for
+	 *                                      the user
 	 */
 
 	@Override
-	public TransactionResponseDto monthlyTransactions(TransactionRequestDto transactionRequestDto) throws TransactionNotFoundException {
+	public TransactionResponseDto monthlyTransactions(TransactionRequestDto transactionRequestDto)
+			throws TransactionNotFoundException {
 		logger.info("to get monthly transactions");
 		String month = String.format("%02d", Integer.parseInt(transactionRequestDto.getMonth()));
 		Integer year = transactionRequestDto.getYear();
@@ -77,8 +80,9 @@ public class TransactionServiceImpl implements TransactionService {
 		LocalDate startDate = LocalDate.parse(year + "-" + month + "-" + "01");
 
 		Optional<User> user = userRepository.findById(transactionRequestDto.getUserId());
+		if (user.isPresent()) {
 		Long cardId = user.get().getCreditCard().getCardId();
-        logger.info("getting card details");
+		logger.info("getting card details");
 		List<Transaction> transactions = transactionRepository.findAllByCreditCardCardIdAndDateBetween(cardId,
 				startDate, endDate);
 		List<TransactionListResponseDto> transactionListResponseDtoList = new ArrayList<>();
@@ -91,17 +95,21 @@ public class TransactionServiceImpl implements TransactionService {
 			transactionListResponseDto.setTransactionId(transaction.getTransactionId());
 			transactionListResponseDtoList.add(transactionListResponseDto);
 		});
-		if(transactionListResponseDtoList.isEmpty()) {
+		
+		if (transactionListResponseDtoList.isEmpty()) {
 			throw new TransactionNotFoundException(Constant.TRANSACTION_NOT_FOUND);
-		}else {
-		TransactionResponseDto transactionResponseDto = new TransactionResponseDto();
-		transactionResponseDto.setTransactionListResponseDto(transactionListResponseDtoList);
-		transactionResponseDto.setStatuscode(Constant.ACCEPTED);
-		transactionResponseDto.setMessage(Constant.SUCCESS);
+		} else {
+			TransactionResponseDto transactionResponseDto = new TransactionResponseDto();
+			transactionResponseDto.setTransactionListResponseDto(transactionListResponseDtoList);
+			transactionResponseDto.setStatuscode(Constant.ACCEPTED);
+			transactionResponseDto.setMessage(Constant.SUCCESS);
 
-		return transactionResponseDto;
+			return transactionResponseDto;
+
+		}
+		} else {
+			return null;
+		}
 
 	}
-
-}
 }

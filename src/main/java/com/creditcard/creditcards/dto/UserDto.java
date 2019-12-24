@@ -1,11 +1,12 @@
 package com.creditcard.creditcards.dto;
 
+import java.time.LocalDate;
+
+import javax.validation.constraints.NotBlank;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import javax.validation.constraints.NotBlank;
-import java.time.LocalDate;
 
 @Setter
 @Getter
