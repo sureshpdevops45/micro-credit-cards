@@ -1,16 +1,17 @@
 package com.creditcard.creditcards.service;
 
-import com.creditcard.creditcards.dto.CreditCardResponseDto;
-import com.creditcard.creditcards.entity.CreditCard;
-import com.creditcard.creditcards.entity.User;
-import com.creditcard.creditcards.repository.UserRepository;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import com.creditcard.creditcards.dto.CreditCardResponseDto;
+import com.creditcard.creditcards.entity.CreditCard;
+import com.creditcard.creditcards.entity.User;
+import com.creditcard.creditcards.repository.UserRepository;
 
 @Service
 public class CreditCardServiceImpl implements CreditCardService {
@@ -22,6 +23,7 @@ public class CreditCardServiceImpl implements CreditCardService {
 
     @Override
     public Optional<CreditCardResponseDto> getCreditCard(Long userId) throws Exception {
+    	logger.info("getting");
         CreditCardResponseDto creditCardDto = null;
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {

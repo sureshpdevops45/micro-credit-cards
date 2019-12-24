@@ -1,18 +1,17 @@
 package com.creditcard.creditcards.service;
 
-import com.creditcard.creditcards.constant.Constant;
-import com.creditcard.creditcards.controller.LoginController;
-import com.creditcard.creditcards.dto.LoginResponseDto;
-import com.creditcard.creditcards.entity.User;
-import com.creditcard.creditcards.exception.UserNotFoundException;
-import com.creditcard.creditcards.repository.LoginRepository;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import com.creditcard.creditcards.constant.Constant;
+import com.creditcard.creditcards.dto.LoginResponseDto;
+import com.creditcard.creditcards.entity.User;
+import com.creditcard.creditcards.exception.UserNotFoundException;
+import com.creditcard.creditcards.repository.LoginRepository;
 
 /**
  * This API is used to login the user using the userName and password to get the
