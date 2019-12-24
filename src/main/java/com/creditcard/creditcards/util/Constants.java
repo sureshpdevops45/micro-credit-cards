@@ -17,6 +17,7 @@ public final class Constants {
 
     public static final int SUCCESS_CODE = 200;
     public static final String FAILED_REGISTRATION = "Registration failed";
+    public static final String FAILED_MSG = "Failed";
     public static final int FAIL_CODE = 500;
 
 

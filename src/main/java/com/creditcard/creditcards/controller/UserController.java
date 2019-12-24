@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
+/**
+ * @author  Mahendran
+ * User Controller
+ */
 @RestController
 @RequestMapping("/users")
 @CrossOrigin
@@ -29,6 +33,12 @@ public class UserController {
     @Autowired
     private CreditCardServiceImpl creditCardService;
 
+    /**
+     * add user
+     * @param userDto as input
+     * @return {@Code ResponseEntity} as response
+     * @throws Exception as output
+     */
     @PostMapping
     public ResponseEntity<ApiResponse> addUser(@RequestBody @Valid UserDto userDto) throws Exception {
         logger.info("Entering into addUser controller");
@@ -46,6 +56,11 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    /**
+     * Generate OTP
+     * @param userId get user ID
+     * @return {@Code ResponseEntity} as ApiResponse
+     */
     @PostMapping("/{userId}/otp")
     public ResponseEntity<ApiResponse> generateOTP(@PathVariable("userId") Long userId) {
         logger.info("Entering into Generate Mobile Number controller");
@@ -60,6 +75,11 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    /**
+     * get OTP of user
+     * @param userId  as input
+     * @return {@Code ResponseEntity} response
+     */
     @GetMapping("/{userId}/otp")
     public ResponseEntity<OTPResponseDto> getOTP(@PathVariable("userId") Long userId) {
         logger.info("Entering into Generate Mobile Number controller");
@@ -71,6 +91,12 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    /**
+     * get credit cards
+     * @param userId passing user id
+     * @return {@Code ResponseEntity} returns the response
+     * @throws Exception
+     */
     @GetMapping("/{userId}/creditcard")
     public ResponseEntity<CreditCardResponseDto> getCreditCards(@PathVariable("userId") Long userId) throws Exception {
         logger.info("Entering into getCreditCards controller");

@@ -38,6 +38,7 @@ public class OTPServiceImpl implements OTPService {
         logger.info("Getting OTP service ");
         OTPResponseDto otpResponseDto = new OTPResponseDto();
         OTP otp = otpRepository.findByUserUserId(userId);
+        otpRepository.deleteById(otp.getOtpId());
         otpResponseDto.setOtpValue(otp.getOtpValue());
         otpResponseDto.setDate(otp.getDate());
         logger.info(" OTP values :" + otpResponseDto);
